@@ -1,29 +1,153 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 )
 
+type TokenType int
+
 const (
-	LEFT_PARENT  = '('
-	RIGHT_PARENT = ')'
-	LEFT_BRACE   = '{'
-	RIGHT_BRACE  = '}'
-	STAR         = '*'
-	DOT          = '.'
-	COMMA        = ','
-	PLUS         = '+'
-	MINUS        = '-'
-	SEMICOLON    = ';'
-	SLASH        = '/'
+	LEFT_PARENT TokenType = iota
+	RIGHT_PARENT
+	LEFT_BRACE
+	RIGHT_BRACE
+	STAR
+	DOT
+	COMMA
+	PLUS
+	MINUS
+	SEMICOLON
+	EQUAL
+	EQUAL_EQUAL
+	SLASH
+	null
+	EOF
 )
+
+type Token struct {
+	Type    TokenType
+	Lexeme  string
+	Literal interface{}
+	Line    int
+}
+
+func (t TokenType) String() string {
+	return [...]string{
+		"EOF",
+		"LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE",
+		"COMMA", "DOT", "MINUS", "PLUS",
+		"SEMICOLON", "SLASH", "STAR",
+		"BANG", "BANG_EQUAL",
+		"EQUAL", "EQUAL_EQUAL",
+		"GREATER", "GREATER_EQUAL",
+		"LESS", "LESS_EQUAL",
+		"IDENTIFIER", "STRING",
+		"NUMBER",
+		"AND", "CLASS", "ELSE", "FALSE", "FUN", "FOR", "IF", "null", "OR",
+		"PRINT", "RETURN", "SUPER", "THIS", "TRUE", "VAR", "WHILE",
+	}[t]
+}
+
+func (t *Token) String() {
+	fmt.Sprintf("%v %v %v", t.Type, t.Lexeme, t.Literal)
+}
+
+type Scanner struct {
+	source  []byte
+	tokens  []Token
+	start   int
+	current int
+	line    int
+}
+
+func (s *Scanner) isAtEnd() bool {
+	return s.current >= len(s.source)
+}
+
+func (s *Scanner) addToken(token TokenType) {
+	s.addTokenLiteral(token, null)
+}
+
+func (s *Scanner) addTokenLiteral(token TokenType, literal interface{}) {
+	text := string(s.source[s.start:s.current])
+	s.tokens = append(s.tokens, Token{Type: token, Lexeme: text, Literal: literal, Line: s.line})
+}
+
+func (s *Scanner) match(expected byte) bool {
+	if s.isAtEnd() {
+		return false
+	}
+
+	if s.source[s.current] != expected {
+		return false
+	}
+
+	s.current++
+	return true
+}
+
+func (s *Scanner) advance() byte {
+	s.current++
+	return s.source[s.current-1]
+}
+
+func (s *Scanner) scanTokens() ([]Token, error) {
+	for !s.isAtEnd() {
+		s.start = s.current
+		err := s.scanToken()
+
+		if err != nil {
+			return s.tokens, errors.New("Scanning with errors")
+		}
+	}
+
+	s.tokens = append(s.tokens, Token{Type: EOF, Lexeme: "", Literal: null, Line: s.line})
+	return s.tokens, nil
+}
+
+func (s *Scanner) scanToken() error {
+	c := s.advance()
+
+	switch c {
+	case '(':
+		s.addToken(LEFT_PARENT)
+	case ')':
+		s.addToken(RIGHT_PARENT)
+	case '{':
+		s.addToken(LEFT_BRACE)
+	case '}':
+		s.addToken(RIGHT_BRACE)
+	case ',':
+		s.addToken(COMMA)
+	case '.':
+		s.addToken(DOT)
+	case '-':
+		s.addToken(MINUS)
+	case '+':
+		s.addToken(PLUS)
+	case ';':
+		s.addToken(SEMICOLON)
+	case '*':
+		s.addToken(STAR)
+	case '=':
+		if s.match('=') {
+			s.addToken(EQUAL_EQUAL)
+		} else {
+			s.addToken(EQUAL)
+		}
+	default:
+		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(c))
+		return errors.New("lexical error")
+	}
+
+	return nil
+}
 
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
-
-	hasError := false
 
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -44,39 +168,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	for _, char := range fileContents {
-		switch char {
-		case LEFT_PARENT:
-			fmt.Println("LEFT_PAREN ( null")
-		case RIGHT_PARENT:
-			fmt.Println("RIGHT_PAREN ) null")
-		case LEFT_BRACE:
-			fmt.Println("LEFT_BRACE { null")
-		case RIGHT_BRACE:
-			fmt.Println("RIGHT_BRACE } null")
-		case STAR:
-			fmt.Println("STAR * null")
-		case DOT:
-			fmt.Println("DOT . null")
-		case COMMA:
-			fmt.Println("COMMA , null")
-		case PLUS:
-			fmt.Println("PLUS + null")
-		case MINUS:
-			fmt.Println("MINUS - null")
-		case SEMICOLON:
-			fmt.Println("SEMICOLON ; null")
-		case SLASH:
-			fmt.Println("SLASH / null")
-		default:
-			hasError = true
-			fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(char))
-		}
+	scanner := &Scanner{
+		source:  fileContents,
+		start:   0,
+		current: 0,
+		line:    1,
 	}
 
-	fmt.Println("EOF  null")
+	tokens, err := scanner.scanTokens()
 
-	if hasError {
+	for _, token := range tokens {
+		token.String()
+	}
+
+	fmt.Println("EOF null")
+
+	if err != nil {
 		os.Exit(65)
 	}
 }
