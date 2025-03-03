@@ -167,6 +167,12 @@ func (s *Scanner) scanToken() error {
 		} else {
 			s.addToken(EQUAL)
 		}
+	case '!':
+		if s.match('=') {
+			s.addToken(BANG_EQUAL)
+		} else {
+			s.addToken(BANG)
+		}
 	default:
 		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(c))
 		return errors.New("lexical error")
