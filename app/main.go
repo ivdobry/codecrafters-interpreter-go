@@ -51,7 +51,7 @@ func (t TokenType) String() string {
 }
 
 func (t *Token) String() {
-	fmt.Sprintf("%v %v %v", t.Type, t.Lexeme, t.Literal)
+	fmt.Sprintf("%s %s %s", t.Type, t.Lexeme, t.Literal)
 }
 
 type Scanner struct {
@@ -99,7 +99,7 @@ func (s *Scanner) scanTokens() ([]Token, error) {
 		err := s.scanToken()
 
 		if err != nil {
-			return s.tokens, errors.New("Scanning with errors")
+			return s.tokens, errors.New("scanning with errors")
 		}
 	}
 
