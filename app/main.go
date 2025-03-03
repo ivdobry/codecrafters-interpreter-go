@@ -14,6 +14,7 @@ const (
 	DOT          = '.'
 	COMMA        = ','
 	PLUS         = '+'
+	MINUS        = '-'
 )
 
 func main() {
@@ -57,6 +58,8 @@ func main() {
 			fmt.Println("COMMA , null")
 		case PLUS:
 			fmt.Println("PLUS + null")
+		case MINUS:
+			fmt.Println("MINUS - null")
 		}
 	}
 
