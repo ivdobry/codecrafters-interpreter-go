@@ -207,7 +207,7 @@ func (s *Scanner) scanToken() error {
 	case '\n':
 		s.line++
 	default:
-		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(c))
+		fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %s\n", s.line, string(c))
 		return errors.New("lexical error")
 	}
 
