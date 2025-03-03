@@ -110,8 +110,6 @@ func (s *Scanner) scanTokens() ([]Token, error) {
 func (s *Scanner) scanToken() error {
 	c := s.advance()
 
-	fmt.Println("holi" + string(c))
-
 	switch c {
 	case '(':
 		s.addToken(LEFT_PARENT)
