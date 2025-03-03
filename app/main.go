@@ -201,9 +201,7 @@ func (s *Scanner) scanToken() error {
 		} else {
 			s.addToken(SLASH)
 		}
-	case ' ':
-	case '\t':
-	case '\r':
+	case ' ', '\t', '\r':
 	case '\n':
 		s.line++
 	default:
