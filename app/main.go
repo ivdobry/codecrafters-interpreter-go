@@ -15,6 +15,7 @@ const (
 	COMMA        = ','
 	PLUS         = '+'
 	MINUS        = '-'
+	SEMICOLON    = ';'
 )
 
 func main() {
@@ -60,6 +61,8 @@ func main() {
 			fmt.Println("PLUS + null")
 		case MINUS:
 			fmt.Println("MINUS - null")
+		case SEMICOLON:
+			fmt.Println("SEMICOLON ; null")
 		}
 	}
 
