@@ -203,8 +203,12 @@ func main() {
 
 	var result string
 
-	for _, token := range tokens {
-		result = result + "\n" + token.String()
+	for i, token := range tokens {
+		if i == 0 {
+			result = token.String()
+		} else {
+			result = result + "\n" + token.String()
+		}
 	}
 
 	fmt.Println(result)
