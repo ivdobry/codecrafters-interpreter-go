@@ -66,6 +66,8 @@ func main() {
 			fmt.Println("SEMICOLON ; null")
 		case SLASH:
 			fmt.Println("SLASH / null")
+		default:
+			fmt.Println("[line 1] Error: Unexpected character: " + string(char))
 		}
 	}
 
