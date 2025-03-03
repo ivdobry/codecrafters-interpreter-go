@@ -5,6 +5,11 @@ import (
 	"os"
 )
 
+const (
+	LEFT_PARENT  = '('
+	RIGHT_PARENT = ')'
+)
+
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
@@ -28,9 +33,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(fileContents) > 0 {
-		panic("Scanner not implemented")
-	} else {
-		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
+	for _, char := range fileContents {
+		switch char {
+		case LEFT_PARENT:
+			fmt.Println("LEFT_PAREN ( null")
+
+		case RIGHT_PARENT:
+			fmt.Println("RIGHT_PAREN ) null")
+		}
+
+		fmt.Println("EOF  null")
 	}
+
 }
