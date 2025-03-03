@@ -16,6 +16,7 @@ const (
 	PLUS         = '+'
 	MINUS        = '-'
 	SEMICOLON    = ';'
+	SLASH        = '/'
 )
 
 func main() {
@@ -63,6 +64,8 @@ func main() {
 			fmt.Println("MINUS - null")
 		case SEMICOLON:
 			fmt.Println("SEMICOLON ; null")
+		case SLASH:
+			fmt.Println("SLASH / null")
 		}
 	}
 
