@@ -10,6 +10,10 @@ const (
 	RIGHT_PARENT = ')'
 	LEFT_BRACE   = '{'
 	RIGHT_BRACE  = '}'
+	STAR         = '*'
+	DOT          = '.'
+	COMMA        = ','
+	PLUS         = '+'
 )
 
 func main() {
@@ -45,6 +49,14 @@ func main() {
 			fmt.Println("LEFT_BRACE { null")
 		case RIGHT_BRACE:
 			fmt.Println("RIGHT_BRACE } null")
+		case STAR:
+			fmt.Println("STAR * null")
+		case DOT:
+			fmt.Println("DOT . null")
+		case COMMA:
+			fmt.Println("COMMA , null")
+		case PLUS:
+			fmt.Println("PLUS + null")
 		}
 	}
 
