@@ -110,6 +110,8 @@ func (s *Scanner) scanTokens() ([]Token, error) {
 func (s *Scanner) scanToken() error {
 	c := s.advance()
 
+	fmt.Println("holi" + string(c))
+
 	switch c {
 	case '(':
 		s.addToken(LEFT_PARENT)
@@ -180,8 +182,6 @@ func main() {
 	for _, token := range tokens {
 		token.String()
 	}
-
-	fmt.Println("EOF null")
 
 	if err != nil {
 		os.Exit(65)
