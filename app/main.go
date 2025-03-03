@@ -69,7 +69,7 @@ func main() {
 		case SLASH:
 			fmt.Println("SLASH / null")
 		default:
-			// errors = errors + 1
+			errors = errors + 1
 			fmt.Println("[line 1] Error: Unexpected character: " + string(char))
 		}
 	}
