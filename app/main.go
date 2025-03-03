@@ -117,6 +117,14 @@ func (s *Scanner) advance() byte {
 	return s.source[s.current-1]
 }
 
+func (s *Scanner) peek() byte {
+	if s.isAtEnd() {
+		return '\000'
+	}
+
+	return s.source[s.current]
+}
+
 func (s *Scanner) scanTokens() ([]Token, error) {
 	hasError := false
 	for !s.isAtEnd() {
@@ -184,6 +192,14 @@ func (s *Scanner) scanToken() error {
 			s.addToken(GREATER_EQUAL)
 		} else {
 			s.addToken(GREATER)
+		}
+	case '/':
+		if s.match('/') {
+			for s.peek() != '\n' && !s.isAtEnd() {
+				s.advance()
+			}
+		} else {
+			s.addToken(SLASH)
 		}
 	default:
 		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(c))
