@@ -125,6 +125,26 @@ func (s *Scanner) peek() byte {
 	return s.source[s.current]
 }
 
+func (s *Scanner) string() error {
+	for s.peek() != '"' && !s.isAtEnd() {
+		if s.peek() == '\n' {
+			s.line++
+		}
+		s.advance()
+	}
+
+	if s.isAtEnd() {
+		fmt.Fprintf(os.Stderr, "[line %d] Error: Unterminated string.", s.line)
+		return errors.New("unterminated string")
+	}
+
+	s.advance()
+
+	value := string(s.source[s.start+1 : s.current-1])
+	s.addTokenLiteral(STRING, value)
+	return nil
+}
+
 func (s *Scanner) scanTokens() ([]Token, error) {
 	hasError := false
 	for !s.isAtEnd() {
@@ -204,6 +224,10 @@ func (s *Scanner) scanToken() error {
 	case ' ', '\t', '\r':
 	case '\n':
 		s.line++
+	case '"':
+		if err := s.string(); err != nil {
+			return err
+		}
 	default:
 		fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %s\n", s.line, string(c))
 		return errors.New("lexical error")
