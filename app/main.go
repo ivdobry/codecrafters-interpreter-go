@@ -70,7 +70,7 @@ func main() {
 			fmt.Println("SLASH / null")
 		default:
 			hasError = true
-			fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s", string(char))
+			fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(char))
 		}
 	}
 
