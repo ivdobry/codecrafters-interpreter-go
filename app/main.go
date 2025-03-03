@@ -50,8 +50,14 @@ func (t TokenType) String() string {
 	}[t]
 }
 
-func (t *Token) String() {
-	fmt.Sprintf("%s %s %s", t.Type, t.Lexeme, t.Literal)
+func (t *Token) String() string {
+	s := fmt.Sprintf("%s %s", t.Type, t.Lexeme)
+	if t.Literal != nil {
+		s += fmt.Sprintf(" %v", t.Literal)
+	} else {
+		s += " null"
+	}
+	return s
 }
 
 type Scanner struct {
@@ -177,9 +183,13 @@ func main() {
 
 	tokens, err := scanner.scanTokens()
 
+	var text string
+
 	for _, token := range tokens {
-		token.String()
+		text = text + token.String()
 	}
+
+	println(text)
 
 	if err != nil {
 		os.Exit(65)
