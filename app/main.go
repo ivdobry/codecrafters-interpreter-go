@@ -8,6 +8,8 @@ import (
 const (
 	LEFT_PARENT  = '('
 	RIGHT_PARENT = ')'
+	LEFT_BRACE   = '{'
+	RIGHT_BRACE  = '}'
 )
 
 func main() {
@@ -37,9 +39,12 @@ func main() {
 		switch char {
 		case LEFT_PARENT:
 			fmt.Println("LEFT_PAREN ( null")
-
 		case RIGHT_PARENT:
 			fmt.Println("RIGHT_PAREN ) null")
+		case LEFT_BRACE:
+			fmt.Println("LEFT_BRACE { null")
+		case RIGHT_BRACE:
+			fmt.Println("RIGHT_BRACE } null")
 		}
 	}
 
