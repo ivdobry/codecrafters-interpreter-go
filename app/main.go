@@ -118,16 +118,22 @@ func (s *Scanner) advance() byte {
 }
 
 func (s *Scanner) scanTokens() ([]Token, error) {
+	hasError := false
 	for !s.isAtEnd() {
 		s.start = s.current
 		err := s.scanToken()
 
 		if err != nil {
-			return s.tokens, errors.New("scanning with errors")
+			hasError = true
 		}
 	}
 
 	s.tokens = append(s.tokens, Token{Type: EOF, Lexeme: "", Literal: null, Line: s.line})
+
+	if hasError {
+		return s.tokens, errors.New("scanning with errors")
+	}
+
 	return s.tokens, nil
 }
 
@@ -162,7 +168,7 @@ func (s *Scanner) scanToken() error {
 			s.addToken(EQUAL)
 		}
 	default:
-		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s", string(c))
+		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(c))
 		return errors.New("lexical error")
 	}
 
