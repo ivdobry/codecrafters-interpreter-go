@@ -49,6 +49,7 @@ const (
 	TRUE
 	VAR
 	WHILE
+	NIL
 )
 
 var keywords = map[string]TokenType{
@@ -59,7 +60,7 @@ var keywords = map[string]TokenType{
 	"for":    FOR,
 	"fun":    FUN,
 	"if":     IF,
-	"null":   null,
+	"nil":    NIL,
 	"or":     OR,
 	"print":  PRINT,
 	"return": RETURN,
@@ -90,7 +91,7 @@ func (t TokenType) String() string {
 		"IDENTIFIER", "STRING",
 		"NUMBER",
 		"AND", "CLASS", "ELSE", "FALSE", "FUN", "FOR", "IF", "null", "OR",
-		"PRINT", "RETURN", "SUPER", "THIS", "TRUE", "VAR", "WHILE",
+		"PRINT", "RETURN", "SUPER", "THIS", "TRUE", "VAR", "WHILE", "NIL",
 	}[t]
 }
 
