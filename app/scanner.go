@@ -51,6 +51,25 @@ const (
 	WHILE
 )
 
+var keywords = map[string]TokenType{
+	"and":    AND,
+	"class":  CLASS,
+	"else":   ELSE,
+	"false":  FALSE,
+	"for":    FOR,
+	"fun":    FUN,
+	"if":     IF,
+	"null":   null,
+	"or":     OR,
+	"print":  PRINT,
+	"return": RETURN,
+	"super":  SUPER,
+	"this":   THIS,
+	"true":   TRUE,
+	"var":    VAR,
+	"while":  WHILE,
+}
+
 type Token struct {
 	Type    TokenType
 	Lexeme  string
@@ -148,6 +167,28 @@ func (s *Scanner) string() error {
 
 func (s *Scanner) isDigit(c byte) bool {
 	return c >= '0' && c <= '9'
+}
+
+func (s *Scanner) isAlpha(c byte) bool {
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+}
+
+func (s *Scanner) isAlphaNumeric(c byte) bool {
+	return s.isAlpha(c) || s.isDigit(c)
+}
+
+func (s *Scanner) identifier() {
+	for s.isAlphaNumeric(s.peek()) {
+		s.advance()
+	}
+
+	tokenType := keywords[string(s.source[s.start:s.current])]
+
+	if tokenType == 0 {
+		tokenType = IDENTIFIER
+	}
+
+	s.addToken(tokenType)
 }
 
 func (s *Scanner) peekNext() byte {
@@ -270,6 +311,8 @@ func (s *Scanner) scanToken() error {
 	default:
 		if s.isDigit(c) {
 			s.number()
+		} else if s.isAlpha(c) {
+			s.identifier()
 		} else {
 			fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %s\n", s.line, string(c))
 			return errors.New("lexical error")
