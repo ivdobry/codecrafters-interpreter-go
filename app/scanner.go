@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type TokenType int
@@ -145,6 +146,44 @@ func (s *Scanner) string() error {
 	return nil
 }
 
+func (s *Scanner) isDigit(c byte) bool {
+	return c >= '0' && c <= '9'
+}
+
+func (s *Scanner) peekNext() byte {
+	if s.current+1 >= len(s.source) {
+		return '\000'
+	}
+
+	return s.source[s.current+1]
+}
+
+func (s *Scanner) number() {
+	for s.isDigit(s.peek()) {
+		s.advance()
+	}
+
+	if s.peek() == '.' && s.isDigit(s.peekNext()) {
+		s.advance()
+
+		for s.isDigit(s.peek()) {
+			s.advance()
+		}
+	}
+
+	num, _ := strconv.ParseFloat(string(s.source[s.start:s.current]), 64)
+
+	var float string
+
+	if num == float64(int(num)) {
+		float = fmt.Sprintf("%.1f", num)
+	} else {
+		float = fmt.Sprintf("%g", num)
+	}
+
+	s.addTokenLiteral(NUMBER, float)
+}
+
 func (s *Scanner) scanTokens() ([]Token, error) {
 	hasError := false
 	for !s.isAtEnd() {
@@ -229,8 +268,12 @@ func (s *Scanner) scanToken() error {
 			return err
 		}
 	default:
-		fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %s\n", s.line, string(c))
-		return errors.New("lexical error")
+		if s.isDigit(c) {
+			s.number()
+		} else {
+			fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %s\n", s.line, string(c))
+			return errors.New("lexical error")
+		}
 	}
 
 	return nil
